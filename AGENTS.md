@@ -4,7 +4,7 @@ Sistem yang membaca email masuk ke inbox CS sebuah e-commerce (beserta lampiran 
 
 Sebelum mengerjakan apa pun, baca `GLOSSARY.md` dan ADR di `docs/adr/`.
 
-Pemilik repo sedang belajar LLM dan RAG. Sebelum menulis kode untuk konsep yang baru, jelaskan dulu konsepnya dan alasan pemilihannya, dengan contoh konkret.
+Pemilik repo sedang belajar LLM dan RAG. Sebelum menulis kode untuk konsep yang baru, jelaskan dulu konsepnya dan alasan pemilihannya, dengan contoh konkret. Setiap tiket selesai, jelaskan apa yang sebenarnya dikerjakan di tiket itu lewat hasilnya (apa yang sekarang jalan, seperti apa outputnya) dan posisinya di alur sistem.
 
 ## Agent skills
 
