@@ -39,11 +39,11 @@ const AMOUNT_PATTERNS = [
 ];
 
 /**
- * Deretan angka, boleh dipisah satu spasi atau strip (`0812-3456-7890`),
- * boleh diawali `+`. Titik sengaja bukan pemisah supaya nominal seperti
- * `1.250.000` tidak tergabung menjadi satu deretan panjang.
+ * Deretan angka, boleh dipisah satu spasi, titik, atau strip
+ * (`0812-3456-7890`, `0812.3456.7890`), boleh diawali `+`. Nominal bertitik
+ * seperti `1.250.000` tetap aman karena di bawah ambang 10 digit.
  */
-const DIGIT_RUN_PATTERN = /(?<![\p{L}\p{N}+])\+?\d(?:[ -]?\d)*(?![\p{L}\p{N}])/gu;
+const DIGIT_RUN_PATTERN = /(?<![\p{L}\p{N}+])\+?\d(?:[ .-]?\d)*(?![\p{L}\p{N}])/gu;
 /** HP Indonesia: 08… atau 628… (sesudah `+` dan pemisah dibuang), 10–14 digit. */
 const PHONE_DIGITS = /^(?:0|62)8\d{8,11}$/;
 /** Awalan jaringan kartu: 2/5 Mastercard, 3 Amex/JCB, 4 Visa, 6 Discover/UnionPay. */
@@ -64,7 +64,10 @@ const STREET_ANCHORS = [
 /** Kata kunci wilayah: kata sesudahnya harus tetap terlihat seperti bagian alamat. */
 const REGION_ANCHOR =
   /(?<![\p{L}\p{N}])(?:RT|RW|Kel|Kelurahan|Kec|Kecamatan|Kab|Kabupaten|Desa|Kota)(?![\p{L}\p{N}])\.?/gu;
-/** Label "Alamat:" menandai seluruh sisa kalimat sebagai alamat, apa pun hurufnya. */
+/**
+ * Label "Alamat:" menandai alamat apa pun hurufnya: sisa kalimat di baris
+ * yang sama, atau kalau label ada di akhir baris, baris-baris berikutnya.
+ */
 const ADDRESS_LABEL =
   /(?<![\p{L}\p{N}])alamat(?:\s+(?:pengiriman|rumah|saya|lengkap|kirim|baru|tujuan))*\s*:[ \t]*/giu;
 
@@ -86,6 +89,10 @@ const ABBREVIATIONS = new Set([
 const ADDRESS_TOKEN = /[ \t]*(?:([\p{L}\p{N}]+(?:[/-][\p{L}\p{N}]+)*)|([.,:#()/-]))/uy;
 /** Celah di antara dua potongan alamat yang masih dianggap satu alamat (baris berikutnya, koma). */
 const ADDRESS_GAP = /^[\s,]*$/;
+/** Label "Alamat:" yang langsung diikuti baris baru. */
+const LINE_BREAK_AFTER_LABEL = /\r?\n/y;
+/** Potongan baris di antara bagian yang dilindungi (mis. nomor order di tengah blok alamat). */
+const UNSHIELDED_SEGMENT = /[^\u0000]+/g;
 
 type AddressScanMode = "street" | "region" | "labeled";
 
@@ -165,6 +172,9 @@ function findAddressSpans(text: string): SensitiveSpan[] {
   ];
   const spans = anchors.flatMap(({ pattern, mode }) =>
     findMatches(text, pattern).flatMap((anchor) => {
+      if (mode === "labeled" && isFollowedByLineBreak(text, anchor.end)) {
+        return findAddressBlock(text, anchor.end);
+      }
       // Label "Alamat:" sendiri tetap terlihat; yang disamarkan isinya.
       const start = mode === "labeled" ? anchor.end : anchor.start;
       const end = findAddressEnd(text, anchor.end, mode);
@@ -204,6 +214,36 @@ function findAddressEnd(text: string, start: number, mode: AddressScanMode): num
     position += token.length;
   }
   return end;
+}
+
+function isFollowedByLineBreak(text: string, position: number): boolean {
+  LINE_BREAK_AFTER_LABEL.lastIndex = position;
+  return LINE_BREAK_AFTER_LABEL.test(text);
+}
+
+/**
+ * Baris-baris sesudah label "Alamat:" di akhir baris, sampai baris kosong
+ * atau akhir teks. Tidak butuh kata kunci jalan, karena labelnya sudah
+ * menandai isinya sebagai alamat. Bagian yang dilindungi tidak ikut disamarkan.
+ */
+function findAddressBlock(text: string, labelEnd: number): Span[] {
+  const spans: Span[] = [];
+  let lineStart = text.indexOf("\n", labelEnd) + 1;
+  while (lineStart < text.length) {
+    const newline = text.indexOf("\n", lineStart);
+    const lineEnd = newline === -1 ? text.length : newline;
+    const line = text.slice(lineStart, lineEnd);
+    if (line.trim() === "") break;
+
+    for (const segment of line.matchAll(UNSHIELDED_SEGMENT)) {
+      const content = segment[0].trim();
+      if (!/[\p{L}\p{N}]/u.test(content)) continue;
+      const start = lineStart + segment.index + segment[0].indexOf(content);
+      spans.push({ start, end: start + content.length });
+    }
+    lineStart = lineEnd + 1;
+  }
+  return spans;
 }
 
 function isAddressWord(word: string): boolean {

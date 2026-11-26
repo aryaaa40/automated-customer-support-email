@@ -18,6 +18,7 @@ describe("maskSensitiveData: nomor rekening", () => {
     ["Transfer dari rek BCA 1234567890 a.n. Rina", "Transfer dari rek BCA [REKENING_1] a.n. Rina"],
     ["rekening BRI 0123-01-000123-30-5 ya", "rekening BRI [REKENING_1] ya"],
     ["no rek 123 456 7890", "no rek [REKENING_1]"],
+    ["rek 123.456.7890", "rek [REKENING_1]"],
     // 16 digit yang gagal cek Luhn bukan nomor kartu, tapi tetap disamarkan.
     ["VA 4111111111111112", "VA [REKENING_1]"],
   ])("%j", (text, expected) => {
@@ -30,6 +31,7 @@ describe("maskSensitiveData: nomor HP", () => {
     ["Hubungi 081234567890", "Hubungi [HP_1]"],
     ["Hubungi 0812-3456-7890", "Hubungi [HP_1]"],
     ["Hubungi 0812 3456 789", "Hubungi [HP_1]"],
+    ["Hubungi 0812.3456.7890.", "Hubungi [HP_1]."],
     ["WA +62 812 3456 7890 ya", "WA [HP_1] ya"],
     ["WA +6281234567890", "WA [HP_1]"],
     ["WA 6281234567890", "WA [HP_1]"],
@@ -64,6 +66,27 @@ describe("maskSensitiveData: alamat", () => {
     expect(mask(text)).toBe("Alamat pengiriman:\n[ALAMAT_1]\n\nTerima kasih");
   });
 
+  describe("label alamat di akhir baris", () => {
+    it.each([
+      ["Alamat:\nGriya Asri C2 no 7\nBandung", "Alamat:\n[ALAMAT_1]"],
+      [
+        "Alamat pengiriman:\n  griya asri c2 no 7\nbandung\n\nTerima kasih",
+        "Alamat pengiriman:\n  [ALAMAT_1]\n\nTerima kasih",
+      ],
+      ["Alamat:\r\nGriya Asri C2 no 7\r\nBandung\r\n\r\nMakasih", "Alamat:\r\n[ALAMAT_1]\r\n\r\nMakasih"],
+    ])("menyamarkan baris berikutnya sampai baris kosong: %j", (text, expected) => {
+      expect(mask(text)).toBe(expected);
+    });
+
+    it("tetap membiarkan nomor order di tengah blok alamat", () => {
+      expect(mask("Alamat:\nGriya Asri C2 ORD-1023\nBandung")).toBe("Alamat:\n[ALAMAT_1] ORD-1023\n[ALAMAT_2]");
+    });
+
+    it("tidak menyamarkan apa pun kalau label ada di akhir teks", () => {
+      expect(mask("Alamat:")).toBe("Alamat:");
+    });
+  });
+
   it.each([
     "Paket saya belum jalan dari gudang",
     "Kurirnya sudah jalan 3 hari tapi belum sampai",
@@ -78,6 +101,7 @@ describe("maskSensitiveData: nomor order dan nominal tidak tersamar", () => {
     "Order ORD-1023 dan ord 1O3l belum sampai",
     "Total Rp1.250.000, ongkir Rp 25.000, refund Rp15000000000",
     "Sudah bayar IDR 2500000 dan 1.250.000 rupiah",
+    "Sudah transfer 1.250.000 kemarin, sisanya 750.000",
     "Saya pesan 3 buah ukuran 42 tanggal 20/11/2026 jam 10",
   ])("%j", (text) => {
     expect(mask(text)).toBe(text);
