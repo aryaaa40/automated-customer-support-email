@@ -117,7 +117,7 @@ describe("Seam 1: Email Masuk → Tiket (LLM palsu)", () => {
       "From: anon@pelanggan.test\r\nSubject: Alamat Jl. Melati 5\r\nDate: Fri, 20 Nov 2026 08:00:00 +0000\r\n\r\nKirim ke Jl. Melati 5\r\n",
     );
     const llm = new FakeLlmClient((prompt) =>
-      prompt.user.includes("1234567890")
+      prompt.user.includes("Rekening saya")
         ? // Output LLM yang tidak valid dan menyalin isi email ke field-nya.
           extraction({ sentiment: "rekening 1234567890" as never })
         : extraction(),
