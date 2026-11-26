@@ -24,6 +24,10 @@ Single-context: satu `GLOSSARY.md` + `docs/adr/` di root repo. See `docs/agents/
 
 Sebelum menulis atau me-review kode, baca `docs/agents/coding-standards.md`: bahasa dan penamaan, fungsi murni untuk aturan, validasi di batas sistem, error dan log.
 
+### Backend
+
+Sebelum mengubah `apps/api`, baca `docs/agents/backend.md`: modul per kemampuan, peran file, hasil sebagai nilai, penamaan method.
+
 ### Frontend
 
 Sebelum mengubah `apps/web`, baca `docs/agents/frontend.md`: struktur per fitur, TanStack Query, Tailwind + shadcn/ui.

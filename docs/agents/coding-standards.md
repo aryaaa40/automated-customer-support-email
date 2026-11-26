@@ -1,6 +1,6 @@
 # Standar kode
 
-Berlaku untuk `apps/api`, `apps/web`, dan `packages/shared`. Aturan frontend tambahan ada di `docs/agents/frontend.md`.
+Berlaku untuk `apps/api`, `apps/web`, dan `packages/shared`. Aturan tambahan ada di `docs/agents/backend.md` dan `docs/agents/frontend.md`.
 
 ## Bahasa
 
