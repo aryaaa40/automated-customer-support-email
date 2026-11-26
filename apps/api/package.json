@@ -7,6 +7,7 @@
     "dev": "nest start --watch",
     "start": "node dist/main.js",
     "process-inbox": "nest build && node dist/cli.js process-inbox",
+    "seed": "nest build && node dist/cli.js seed",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "nest build && node dist/cli.js migrate",
     "typecheck": "tsc --noEmit",

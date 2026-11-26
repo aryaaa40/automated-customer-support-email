@@ -1,5 +1,12 @@
 import type { Kategori, Sentimen, StatusTiket, Urgensi } from "./domain";
 import type { Ambigu, Bersumber, Penanda } from "./extraction";
+import type {
+  PaymentMethod,
+  PaymentStatus,
+  ProductCategory,
+  ShippingStatus,
+  TransactionStatus,
+} from "./orders";
 
 /** Bentuk respons API Tiket, dipakai bersama oleh API dan web. */
 
@@ -22,6 +29,48 @@ export interface IssueDto {
   amount: Bersumber<number> | null;
   date: Bersumber<string> | null;
   productName: Bersumber<string> | null;
+  verification: OrderVerificationDto;
+}
+
+/** Hasil verifikasi order untuk satu Issue. */
+export type OrderVerificationDto =
+  | { status: "tanpa_nomor" }
+  | { status: "tidak_ditemukan"; orderNumber: string }
+  | {
+      status: "ditemukan";
+      /** Pengirim sama dengan Pemilik Order (dibandingkan case-insensitive). */
+      isSenderOrderOwner: boolean;
+      /** Email Pemilik Order; tersamar (mis. `s***@pelanggan.example`) kalau bukan Pengirim. */
+      orderOwnerEmail: string;
+      order: OrderDto;
+    };
+
+/** Satu order di database order, dengan uang dalam integer rupiah. */
+export interface OrderDto {
+  orderNumber: string;
+  orderedAt: string;
+  totalRupiah: number;
+  paymentStatus: PaymentStatus;
+  shippingStatus: ShippingStatus;
+  /** Tanggal barang diterima pelanggan; null kalau belum diterima. */
+  deliveredAt: string | null;
+  items: OrderItemDto[];
+  transactions: PaymentTransactionDto[];
+}
+
+export interface OrderItemDto {
+  productName: string;
+  productCategory: ProductCategory;
+  quantity: number;
+  unitPriceRupiah: number;
+}
+
+export interface PaymentTransactionDto {
+  reference: string;
+  method: PaymentMethod;
+  amountRupiah: number;
+  status: TransactionStatus;
+  createdAt: string;
 }
 
 export interface AttachmentDto {

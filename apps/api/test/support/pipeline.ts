@@ -10,6 +10,7 @@ import { FileSource } from "../../src/email-source/file-source";
 import { IngestionService } from "../../src/ingestion/ingestion.service";
 import { FakeLlmClient } from "../../src/llm/fake-llm-client";
 import { LLM_CLIENT } from "../../src/llm/llm-client";
+import { type SeedData, writeSeed } from "../../src/orders/seed";
 import { TicketsService } from "../../src/tickets/tickets.service";
 import { TEST_DATABASE_URL } from "../global-setup";
 
@@ -28,12 +29,14 @@ export class CapturingLogger implements LoggerService {
 
 /**
  * Seam 1: pipeline lengkap dengan database test asli, inbox folder sementara,
- * dan adapter LLM palsu. Test hanya memakai processInbox() dan TicketsService.
+ * adapter LLM palsu, dan database order berisi fixture (kosong kalau tidak
+ * diberikan). Test hanya memakai processInbox() dan TicketsService.
  */
-export async function createPipeline(opts: { inboxDir: string; llm: FakeLlmClient }) {
+export async function createPipeline(opts: { inboxDir: string; llm: FakeLlmClient; orders?: SeedData }) {
   const pool = new Pool({ connectionString: TEST_DATABASE_URL });
   const db: Database = drizzle(pool);
   await db.execute(sql`TRUNCATE incoming_emails CASCADE`);
+  await writeSeed(db, opts.orders ?? { customers: [], products: [], orders: [] });
 
   const logger = new CapturingLogger();
   const moduleRef = await Test.createTestingModule({ imports: [AppModule] })

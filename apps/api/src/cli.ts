@@ -5,11 +5,20 @@ import { AppModule } from "./app.module";
 import { loadEnv } from "./config";
 import { DATABASE, runMigrations } from "./db/database";
 import { IngestionService } from "./ingestion/ingestion.service";
+import { writeSeed } from "./orders/seed";
+import { buildSeedData } from "./orders/seed-data";
 
 /** CLI lewat NestJS standalone application context: `node dist/cli.js <perintah>`. */
 const commands: Record<string, (app: Awaited<ReturnType<typeof createContext>>) => Promise<void>> = {
   // Migrasi sudah dijalankan main() sebelum setiap perintah; perintah ini hanya itu.
   migrate: async () => {},
+  seed: async (app) => {
+    const data = buildSeedData();
+    await writeSeed(app.get(DATABASE), data);
+    Logger.log(
+      `Seed selesai: ${data.customers.length} pelanggan, ${data.products.length} produk, ${data.orders.length} order`,
+    );
+  },
   "process-inbox": async (app) => {
     const result = await app.get(IngestionService).processInbox();
     if (result.failed > 0) process.exitCode = 1;

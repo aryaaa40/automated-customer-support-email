@@ -6,6 +6,7 @@ import { FileSource } from "./email-source/file-source";
 import { Extractor } from "./extraction/extractor";
 import { IngestionService } from "./ingestion/ingestion.service";
 import { LlmModule } from "./llm/llm.module";
+import { OrdersService } from "./orders/orders.service";
 import { TicketsController } from "./tickets/tickets.controller";
 import { TicketsService } from "./tickets/tickets.service";
 
@@ -16,6 +17,7 @@ import { TicketsService } from "./tickets/tickets.service";
     { provide: EMAIL_SOURCE, useFactory: () => new FileSource(config.inboxDir()) },
     Extractor,
     IngestionService,
+    OrdersService,
     TicketsService,
   ],
 })

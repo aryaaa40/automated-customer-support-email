@@ -1,4 +1,15 @@
-import { KATEGORI, SENTIMEN, STATUS_TIKET, URGENSI } from "@email-routing/shared";
+import {
+  KATEGORI,
+  ORDER_VERIFICATION_STATUSES,
+  PAYMENT_METHODS,
+  PAYMENT_STATUSES,
+  PRODUCT_CATEGORIES,
+  SENTIMEN,
+  SHIPPING_STATUSES,
+  STATUS_TIKET,
+  TRANSACTION_STATUSES,
+  URGENSI,
+} from "@email-routing/shared";
 import {
   bigint,
   boolean,
@@ -18,6 +29,75 @@ export const kategoriEnum = pgEnum("kategori", KATEGORI);
 export const urgensiEnum = pgEnum("urgensi", URGENSI);
 export const sentimenEnum = pgEnum("sentimen", SENTIMEN);
 export const statusTiketEnum = pgEnum("status_tiket", STATUS_TIKET);
+export const orderVerificationStatusEnum = pgEnum("order_verification_status", ORDER_VERIFICATION_STATUSES);
+export const productCategoryEnum = pgEnum("product_category", PRODUCT_CATEGORIES);
+export const paymentStatusEnum = pgEnum("payment_status", PAYMENT_STATUSES);
+export const shippingStatusEnum = pgEnum("shipping_status", SHIPPING_STATUSES);
+export const paymentMethodEnum = pgEnum("payment_method", PAYMENT_METHODS);
+export const transactionStatusEnum = pgEnum("transaction_status", TRANSACTION_STATUSES);
+
+// ---------------------------------------------------------------------------
+// Database order (diisi seed). Issue merujuk order lewat nomor order, bukan
+// foreign key, supaya seed bisa dijalankan ulang tanpa menyentuh Tiket.
+// ---------------------------------------------------------------------------
+
+/** Pelanggan; yang tercatat di sebuah order adalah Pemilik Order. */
+export const customers = pgTable("customers", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: text("name").notNull(),
+  email: text("email").notNull().unique(),
+});
+
+/** Produk; kategori produk menentukan masa garansi (#8). */
+export const products = pgTable("products", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  sku: text("sku").notNull().unique(),
+  name: text("name").notNull(),
+  category: productCategoryEnum("category").notNull(),
+  priceRupiah: bigint("price_rupiah", { mode: "number" }).notNull(),
+});
+
+/** Order; `customerId` menunjuk Pemilik Order. */
+export const orders = pgTable("orders", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  orderNumber: text("order_number").notNull().unique(),
+  customerId: uuid("customer_id")
+    .notNull()
+    .references(() => customers.id, { onDelete: "cascade" }),
+  orderedAt: timestamp("ordered_at", { withTimezone: true }).notNull(),
+  /** Jumlah quantity × harga satuan semua item. */
+  totalRupiah: bigint("total_rupiah", { mode: "number" }).notNull(),
+  paymentStatus: paymentStatusEnum("payment_status").notNull(),
+  shippingStatus: shippingStatusEnum("shipping_status").notNull(),
+  /** Tanggal diterima pelanggan; null kalau belum diterima. */
+  deliveredAt: timestamp("delivered_at", { withTimezone: true }),
+});
+
+export const orderItems = pgTable("order_items", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  orderId: uuid("order_id")
+    .notNull()
+    .references(() => orders.id, { onDelete: "cascade" }),
+  productId: uuid("product_id")
+    .notNull()
+    .references(() => products.id, { onDelete: "cascade" }),
+  quantity: integer("quantity").notNull(),
+  /** Harga satuan saat order dibuat (bisa berbeda dari harga produk sekarang). */
+  unitPriceRupiah: bigint("unit_price_rupiah", { mode: "number" }).notNull(),
+});
+
+/** Transaksi pembayaran sebuah order; satu order bisa punya beberapa (gagal lalu berhasil, double charge). */
+export const paymentTransactions = pgTable("payment_transactions", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  orderId: uuid("order_id")
+    .notNull()
+    .references(() => orders.id, { onDelete: "cascade" }),
+  reference: text("reference").notNull().unique(),
+  method: paymentMethodEnum("method").notNull(),
+  amountRupiah: bigint("amount_rupiah", { mode: "number" }).notNull(),
+  status: transactionStatusEnum("status").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull(),
+});
 
 /** Email Masuk: data mentah apa adanya, selalu dianggap tidak tepercaya. */
 export const incomingEmails = pgTable("incoming_emails", {
@@ -80,4 +160,10 @@ export const issues = pgTable("issues", {
   dateSource: text("date_source"),
   productName: text("product_name"),
   productNameSource: text("product_name_source"),
+  /** Hasil Order Verifier, disimpan saat ingestion supaya aturan Flag Review bisa ditelusuri. */
+  orderVerification: orderVerificationStatusEnum("order_verification").notNull(),
+  /** Nomor order di database yang cocok; null kalau tidak ditemukan atau tanpa nomor. */
+  verifiedOrderNumber: text("verified_order_number"),
+  /** Pengirim sama dengan Pemilik Order; null kalau order tidak ditemukan. */
+  isSenderOrderOwner: boolean("is_sender_order_owner"),
 });

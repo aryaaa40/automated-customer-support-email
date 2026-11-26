@@ -1,13 +1,24 @@
-import type { Bersumber, Extraction, TicketDetail, TicketSummary } from "@email-routing/shared";
+import type {
+  Bersumber,
+  Extraction,
+  TicketDetail,
+  TicketSummary,
+} from "@email-routing/shared";
 import { Inject, Injectable } from "@nestjs/common";
 import { asc, desc, eq, inArray } from "drizzle-orm";
 import { DATABASE, type Database } from "../db/database";
 import { attachments, incomingEmails, issues, tickets } from "../db/schema";
 import type { IncomingEmail } from "../email-source/email-source";
+import { OrdersService } from "../orders/orders.service";
+import { toOrderVerificationDto } from "../orders/to-order-verification-dto";
+import type { OrderVerification } from "../orders/verify-order";
 
 @Injectable()
 export class TicketsService {
-  constructor(@Inject(DATABASE) private readonly db: Database) {}
+  constructor(
+    @Inject(DATABASE) private readonly db: Database,
+    private readonly orders: OrdersService,
+  ) {}
 
   async hasProcessed(messageId: string): Promise<boolean> {
     const rows = await this.db
@@ -20,9 +31,17 @@ export class TicketsService {
 
   /**
    * Simpan Email Masuk beserta Tiket dan Issue-nya dalam satu transaksi.
+   * `verifications[i]` adalah hasil verifikasi order untuk `extraction.issues[i]`.
    * Mengembalikan false kalau Message-ID sudah pernah tersimpan.
    */
-  async createFromExtraction(email: IncomingEmail, extraction: Extraction): Promise<boolean> {
+  async createFromExtraction(
+    email: IncomingEmail,
+    extraction: Extraction,
+    verifications: OrderVerification[],
+  ): Promise<boolean> {
+    if (verifications.length !== extraction.issues.length) {
+      throw new Error("Jumlah hasil verifikasi order tidak sama dengan jumlah Issue");
+    }
     return this.db.transaction(async (tx) => {
       const [saved] = await tx
         .insert(incomingEmails)
@@ -68,6 +87,7 @@ export class TicketsService {
 
       await tx.insert(issues).values(
         extraction.issues.map((issue, position) => ({
+          ...toVerificationColumns(verifications[position]!),
           ticketId: ticket!.id,
           position,
           category: issue.category,
@@ -141,6 +161,9 @@ export class TicketsService {
       this.db.select().from(issues).where(eq(issues.ticketId, ticket.id)).orderBy(asc(issues.position)),
     ]);
 
+    const verifiedNumbers = issueRows.flatMap((i) => (i.verifiedOrderNumber ? [i.verifiedOrderNumber] : []));
+    const ordersByNumber = await this.orders.findByNumbers(verifiedNumbers);
+
     return {
       id: ticket.id,
       status: ticket.status,
@@ -166,9 +189,20 @@ export class TicketsService {
         amount: toBersumber(i.amount, i.amountSource),
         date: toBersumber(i.date, i.dateSource),
         productName: toBersumber(i.productName, i.productNameSource),
+        verification: toOrderVerificationDto(i, ordersByNumber),
       })),
     };
   }
+}
+
+/** Kolom Issue yang menyimpan hasil verifikasi order. */
+function toVerificationColumns(verification: OrderVerification) {
+  const isFound = verification.status === "ditemukan";
+  return {
+    orderVerification: verification.status,
+    verifiedOrderNumber: isFound ? verification.orderNumber : null,
+    isSenderOrderOwner: isFound ? verification.isSenderOrderOwner : null,
+  };
 }
 
 function toBersumber<T>(value: T | null, source: string | null): Bersumber<T> | null {

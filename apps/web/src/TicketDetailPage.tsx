@@ -1,6 +1,7 @@
 import type { Bersumber } from "@email-routing/shared";
 import { Link, useParams } from "react-router";
 import { api } from "./api";
+import { OrderVerification } from "./OrderVerification";
 import { formatTanggal, kategoriLabel, sentimenLabel, statusLabel, urgensiLabel } from "./labels";
 import { useAsync } from "./useAsync";
 
@@ -58,6 +59,7 @@ export function TicketDetailPage() {
             <Data label="Tanggal" data={issue.date} />
             <Data label="Produk" data={issue.productName} />
           </dl>
+          <OrderVerification verification={issue.verification} />
         </section>
       ))}
 

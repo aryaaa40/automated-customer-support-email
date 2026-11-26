@@ -8,6 +8,7 @@
     "typecheck": "pnpm -r typecheck",
     "test": "pnpm -r test",
     "db:up": "docker compose up -d",
+    "seed": "pnpm --filter @email-routing/api seed",
     "process-inbox": "pnpm --filter @email-routing/api process-inbox",
     "dev:api": "pnpm --filter @email-routing/api dev",
     "dev:web": "pnpm --filter @email-routing/web dev"

@@ -1,4 +1,5 @@
 import { Inject, Injectable, Logger } from "@nestjs/common";
+import type { Extraction } from "@email-routing/shared";
 import { ZodError } from "zod";
 import {
   EMAIL_SOURCE,
@@ -7,6 +8,8 @@ import {
   type EmailSource,
 } from "../email-source/email-source";
 import { Extractor } from "../extraction/extractor";
+import { OrdersService } from "../orders/orders.service";
+import { type OrderVerification, verifyOrder } from "../orders/verify-order";
 import { TicketsService } from "../tickets/tickets.service";
 
 export interface IngestionResult {
@@ -29,6 +32,7 @@ export class IngestionService {
   constructor(
     @Inject(EMAIL_SOURCE) private readonly source: EmailSource,
     private readonly extractor: Extractor,
+    private readonly orders: OrdersService,
     private readonly tickets: TicketsService,
   ) {}
 
@@ -53,12 +57,20 @@ export class IngestionService {
       if (await this.tickets.hasProcessed(email.messageId)) return "skipped";
 
       const extraction = await this.extractor.extract(email);
-      const created = await this.tickets.createFromExtraction(email, extraction);
+      const verifications = await this.verifyOrders(email.sender, extraction);
+      const created = await this.tickets.createFromExtraction(email, extraction, verifications);
       return created ? "processed" : "skipped";
     } catch (error) {
       this.logger.error(`Gagal memproses email ${ref.id}: ${describeError(error)}`);
       return "failed";
     }
+  }
+
+  /** Verifikasi per Issue: tiap Issue dicek terhadap order-nya sendiri (ADR-0002). */
+  private async verifyOrders(sender: string, extraction: Extraction): Promise<OrderVerification[]> {
+    const orderNumbers = extraction.issues.flatMap((issue) => (issue.orderNumber ? [issue.orderNumber.value] : []));
+    const ordersByNumber = await this.orders.findByNumbers(orderNumbers);
+    return extraction.issues.map((issue) => verifyOrder(sender, issue.orderNumber?.value ?? null, ordersByNumber));
   }
 }
 
