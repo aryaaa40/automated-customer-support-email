@@ -8,6 +8,7 @@ import {
   type EmailSource,
 } from "../email-source/email-source";
 import { Extractor } from "../extraction/extractor";
+import { maskIncomingEmail } from "../masking/mask-sensitive-data";
 import { normalizeOrderNumber } from "../orders/correct-order-number";
 import { OrdersService } from "../orders/orders.service";
 import { type OrderVerification, verifyOrder } from "../orders/verify-order";
@@ -57,7 +58,8 @@ export class IngestionService {
       const email = await this.source.read(ref);
       if (await this.tickets.hasProcessed(email.messageId)) return "skipped";
 
-      const extraction = await this.extractor.extract(email);
+      // Hanya prompt yang disamarkan; Tiket menyimpan email asli untuk Staf CS.
+      const extraction = await this.extractor.extract(maskIncomingEmail(email));
       const verifications = await this.verifyOrders(email.sender, extraction);
       const created = await this.tickets.createFromExtraction(email, extraction, verifications);
       return created ? "processed" : "skipped";
