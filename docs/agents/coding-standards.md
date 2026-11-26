@@ -26,6 +26,7 @@ Berlaku untuk `apps/api`, `apps/web`, dan `packages/shared`. Aturan tambahan ada
 | Tiket / status Tiket | `Ticket` / `TicketStatus` |
 | Draft Balasan | `ReplyDraft` |
 | Kebijakan / Versi Kebijakan / Sitasi | `Policy` / `PolicyVersion` / `Citation` |
+| Pasal / Bab | `article` / `chapter` (`PolicyArticle` / `PolicyChapter`) |
 | Aturan Terhitung / Fakta Kebijakan | `PolicyRule` / `PolicyFact` |
 | Skenario / Ground Truth | `Scenario` / `GroundTruth` |
 

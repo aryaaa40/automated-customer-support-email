@@ -13,6 +13,7 @@ pnpm install              # juga mem-build paket shared
 cp .env.example .env
 pnpm db:up                # Postgres + pgvector di localhost:5433
 pnpm seed                 # pelanggan, produk, dan order dummy (deterministik, aman diulang)
+pnpm policies:generate    # data/policies/source/*.md → PDF Kebijakan + manifest.json (tanpa DB)
 pnpm process-inbox        # data/inbox/*.eml → Tiket (migrasi DB otomatis)
 pnpm dev:api              # http://localhost:3000/tickets
 pnpm dev:web              # http://localhost:5173
@@ -29,5 +30,7 @@ pnpm dev:web              # http://localhost:5173
 | `apps/web` | React + Vite: daftar dan detail Tiket |
 
 Alur saat ini: `data/inbox/*.eml` → FileSource → Masking (nomor kartu, rekening, HP, dan alamat di subjek dan body diganti token seperti `[KARTU_1]`; nomor order dan nominal dibiarkan; Lampiran dikirim utuh) → Extractor (adapter LLM palsu, divalidasi skema) → Order Verifier per Issue (nomor order dinormalisasi, lalu dicari persis; kalau tidak ada, Koreksi Nomor Order ke satu-satunya order milik Pengirim berjarak edit ≤ 1, atau nomor order ambigu kalau kandidatnya lebih dari satu; lalu Pengirim = Pemilik Order atau tidak) → Email Masuk + Tiket + Issue di Postgres → `GET /tickets` → halaman web.
+
+PDF Kebijakan di `data/policies/` dibuat `pnpm policies:generate` dari sumber Markdown di `data/policies/source/`: enam Kebijakan aktif (Refund & Pengembalian, Pengiriman & Klaim Paket Hilang, Garansi Produk, Pembayaran & Verifikasi Transfer, Akun & Keamanan, Panduan Tone & Template Balasan CS) ditambah Kebijakan Refund versi 2.1 yang tidak berlaku (batas 14 hari, digantikan versi 3.0 dengan batas 7 hari). Setiap dokumen bernomor `BAB n` / `Pasal n.k`, berteks (bisa diekstrak), dan hasilnya byte-identik setiap kali dibuat. `manifest.json` mencatat versi, status, dan halaman awal setiap pasal. Setelah mengubah sumber, jalankan ulang perintahnya; test akan gagal kalau PDF di repo tertinggal dari sumbernya.
 
 Database order dummy dibuat `pnpm seed` dari PRNG ber-seed tetap: 30 pelanggan, 24 produk (5 kategori produk), dan 150 order `ORD-1001` s.d. `ORD-1150` beserta item, transaksi pembayaran, status pengiriman, dan tanggal diterima. Menjalankannya ulang menghasilkan data yang sama dan tidak menyentuh Tiket.

@@ -2,11 +2,22 @@ import "reflect-metadata";
 import { Logger } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
-import { loadEnv } from "./config";
+import { config, loadEnv } from "./config";
 import { DATABASE, runMigrations } from "./db/database";
 import { IngestionService } from "./ingestion/ingestion.service";
 import { writeSeed } from "./orders/seed";
 import { buildSeedData } from "./orders/seed-data";
+import { generatePolicyPdfs } from "./policies/policy-pdfs";
+
+/** Perintah yang hanya mengolah file di repo, tanpa database dan tanpa NestJS. */
+const fileCommands: Record<string, () => Promise<void>> = {
+  "policies:generate": async () => {
+    const manifest = await generatePolicyPdfs(config.policySourceDir(), config.policyPdfDir());
+    for (const entry of manifest) {
+      Logger.log(`${entry.file}: ${entry.pageCount} halaman, ${entry.articles.length} pasal, status ${entry.status}`);
+    }
+  },
+};
 
 /** CLI lewat NestJS standalone application context: `node dist/cli.js <perintah>`. */
 const commands: Record<string, (app: Awaited<ReturnType<typeof createContext>>) => Promise<void>> = {
@@ -32,9 +43,12 @@ function createContext() {
 async function main() {
   loadEnv();
   const name = process.argv[2] ?? "";
+  const fileCommand = fileCommands[name];
+  if (fileCommand) return fileCommand();
   const command = commands[name];
   if (!command) {
-    Logger.error(`Perintah tidak dikenal: "${name}". Pilihan: ${Object.keys(commands).join(", ")}`);
+    const choices = [...Object.keys(commands), ...Object.keys(fileCommands)].join(", ");
+    Logger.error(`Perintah tidak dikenal: "${name}". Pilihan: ${choices}`);
     process.exitCode = 1;
     return;
   }

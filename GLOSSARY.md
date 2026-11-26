@@ -116,6 +116,10 @@ _Avoid_: SOP, rules, policy doc
 Edisi tertentu dari sebuah dokumen Kebijakan, berstatus aktif atau tidak berlaku. Hanya versi aktif yang boleh menjadi acuan.
 _Avoid_: Revisi, draft kebijakan
 
+**Pasal**:
+Satuan bernomor terkecil dalam dokumen Kebijakan (misalnya Pasal 3.1), dikelompokkan dalam Bab (BAB 3). Sitasi dan Aturan Terhitung merujuk ke nomor pasal.
+_Avoid_: Ayat, klausul, section
+
 **Sitasi**:
 Rujukan dokumen, halaman, dan pasal Kebijakan yang dipakai untuk menyusun sebuah Draft Balasan.
 _Avoid_: Sumber, referensi

@@ -1,0 +1,624 @@
+[
+  {
+    "file": "kebijakan-akun-keamanan-v1.1.pdf",
+    "code": "KBJ-05",
+    "title": "Kebijakan Akun & Keamanan",
+    "version": "1.1",
+    "status": "aktif",
+    "effectiveDate": "2026-04-01",
+    "pageCount": 3,
+    "articles": [
+      {
+        "number": "1.1",
+        "title": "Ruang Lingkup",
+        "page": 1
+      },
+      {
+        "number": "1.2",
+        "title": "Prinsip Keamanan",
+        "page": 1
+      },
+      {
+        "number": "2.1",
+        "title": "Lupa Kata Sandi",
+        "page": 1
+      },
+      {
+        "number": "2.2",
+        "title": "Akun Terkunci",
+        "page": 1
+      },
+      {
+        "number": "2.3",
+        "title": "Verifikasi Identitas",
+        "page": 1
+      },
+      {
+        "number": "3.1",
+        "title": "Perubahan Alamat Email",
+        "page": 2
+      },
+      {
+        "number": "3.2",
+        "title": "Perubahan Alamat Pengiriman",
+        "page": 2
+      },
+      {
+        "number": "4.1",
+        "title": "Laporan Akun Diretas",
+        "page": 2
+      },
+      {
+        "number": "4.2",
+        "title": "Transaksi Tidak Dikenal",
+        "page": 2
+      },
+      {
+        "number": "4.3",
+        "title": "Upaya Penipuan Mengatasnamakan Perusahaan",
+        "page": 2
+      },
+      {
+        "number": "5.1",
+        "title": "Informasi Order Milik Orang Lain",
+        "page": 3
+      },
+      {
+        "number": "5.2",
+        "title": "Penghapusan Akun",
+        "page": 3
+      },
+      {
+        "number": "6.1",
+        "title": "Saluran Resmi Customer Service",
+        "page": 3
+      },
+      {
+        "number": "6.2",
+        "title": "Waktu Respons",
+        "page": 3
+      },
+      {
+        "number": "6.3",
+        "title": "Rekaman Komunikasi",
+        "page": 3
+      }
+    ]
+  },
+  {
+    "file": "kebijakan-garansi-produk-v1.2.pdf",
+    "code": "KBJ-03",
+    "title": "Kebijakan Garansi Produk",
+    "version": "1.2",
+    "status": "aktif",
+    "effectiveDate": "2026-05-01",
+    "pageCount": 4,
+    "articles": [
+      {
+        "number": "1.1",
+        "title": "Ruang Lingkup",
+        "page": 1
+      },
+      {
+        "number": "1.2",
+        "title": "Garansi dan Refund",
+        "page": 1
+      },
+      {
+        "number": "2.1",
+        "title": "Masa Garansi per Kategori Produk",
+        "page": 1
+      },
+      {
+        "number": "2.2",
+        "title": "Awal dan Akhir Masa Garansi",
+        "page": 2
+      },
+      {
+        "number": "2.3",
+        "title": "Garansi Produk Pengganti",
+        "page": 2
+      },
+      {
+        "number": "3.1",
+        "title": "Kerusakan yang Ditanggung",
+        "page": 2
+      },
+      {
+        "number": "3.2",
+        "title": "Kerusakan yang Tidak Ditanggung",
+        "page": 2
+      },
+      {
+        "number": "4.1",
+        "title": "Pengajuan Klaim",
+        "page": 2
+      },
+      {
+        "number": "4.2",
+        "title": "Pemeriksaan oleh Tim Quality",
+        "page": 3
+      },
+      {
+        "number": "4.3",
+        "title": "Hasil Klaim",
+        "page": 3
+      },
+      {
+        "number": "5.1",
+        "title": "Garansi Resmi Pabrikan",
+        "page": 3
+      },
+      {
+        "number": "5.2",
+        "title": "Bukti Pembelian",
+        "page": 3
+      },
+      {
+        "number": "5.3",
+        "title": "Contoh Perhitungan Masa Garansi",
+        "page": 3
+      },
+      {
+        "number": "5.4",
+        "title": "Ongkos Kirim Klaim Garansi",
+        "page": 4
+      }
+    ]
+  },
+  {
+    "file": "kebijakan-pembayaran-verifikasi-transfer-v2.0.pdf",
+    "code": "KBJ-04",
+    "title": "Kebijakan Pembayaran & Verifikasi Transfer",
+    "version": "2.0",
+    "status": "aktif",
+    "effectiveDate": "2026-06-01",
+    "pageCount": 3,
+    "articles": [
+      {
+        "number": "1.1",
+        "title": "Ruang Lingkup",
+        "page": 1
+      },
+      {
+        "number": "1.2",
+        "title": "Metode Pembayaran",
+        "page": 1
+      },
+      {
+        "number": "2.1",
+        "title": "Arti Status Pembayaran",
+        "page": 1
+      },
+      {
+        "number": "2.2",
+        "title": "Pembatalan Otomatis",
+        "page": 2
+      },
+      {
+        "number": "3.1",
+        "title": "Bukti Transfer",
+        "page": 2
+      },
+      {
+        "number": "3.2",
+        "title": "Nominal Transfer Tidak Sesuai",
+        "page": 2
+      },
+      {
+        "number": "3.3",
+        "title": "Waktu Verifikasi",
+        "page": 2
+      },
+      {
+        "number": "4.1",
+        "title": "Dana Terpotong tetapi Pembayaran Gagal",
+        "page": 2
+      },
+      {
+        "number": "4.2",
+        "title": "Tagihan Ganda",
+        "page": 2
+      },
+      {
+        "number": "4.3",
+        "title": "Pembayaran Kartu Kredit Ditolak",
+        "page": 3
+      },
+      {
+        "number": "5.1",
+        "title": "Ambang Verifikasi Manual",
+        "page": 3
+      },
+      {
+        "number": "5.2",
+        "title": "Data Pembayaran Sensitif",
+        "page": 3
+      },
+      {
+        "number": "6.1",
+        "title": "Invoice Resmi",
+        "page": 3
+      },
+      {
+        "number": "6.2",
+        "title": "Perbedaan Data antara Invoice dan Keterangan Pelanggan",
+        "page": 3
+      },
+      {
+        "number": "6.3",
+        "title": "Permintaan Salinan Invoice",
+        "page": 3
+      }
+    ]
+  },
+  {
+    "file": "kebijakan-pengiriman-klaim-paket-hilang-v2.0.pdf",
+    "code": "KBJ-02",
+    "title": "Kebijakan Pengiriman & Klaim Paket Hilang",
+    "version": "2.0",
+    "status": "aktif",
+    "effectiveDate": "2026-03-01",
+    "pageCount": 3,
+    "articles": [
+      {
+        "number": "1.1",
+        "title": "Ruang Lingkup",
+        "page": 1
+      },
+      {
+        "number": "1.2",
+        "title": "Mitra Kurir",
+        "page": 1
+      },
+      {
+        "number": "2.1",
+        "title": "Waktu Pemrosesan Pesanan",
+        "page": 1
+      },
+      {
+        "number": "2.2",
+        "title": "Estimasi Waktu Pengiriman",
+        "page": 1
+      },
+      {
+        "number": "2.3",
+        "title": "Ongkos Kirim",
+        "page": 2
+      },
+      {
+        "number": "3.1",
+        "title": "Arti Status Pengiriman",
+        "page": 2
+      },
+      {
+        "number": "3.2",
+        "title": "Tanggal Diterima",
+        "page": 2
+      },
+      {
+        "number": "3.3",
+        "title": "Paket Terlambat",
+        "page": 2
+      },
+      {
+        "number": "4.1",
+        "title": "Paket Tertahan",
+        "page": 2
+      },
+      {
+        "number": "4.2",
+        "title": "Paket Dinyatakan Hilang",
+        "page": 2
+      },
+      {
+        "number": "4.3",
+        "title": "Klaim Paket Hilang",
+        "page": 3
+      },
+      {
+        "number": "4.4",
+        "title": "Status Diterima tetapi Paket Tidak Ada",
+        "page": 3
+      },
+      {
+        "number": "5.1",
+        "title": "Barang Salah Kirim",
+        "page": 3
+      },
+      {
+        "number": "5.2",
+        "title": "Kemasan Rusak saat Diterima",
+        "page": 3
+      },
+      {
+        "number": "5.3",
+        "title": "Keadaan Kahar",
+        "page": 3
+      }
+    ]
+  },
+  {
+    "file": "kebijakan-refund-pengembalian-v2.1.pdf",
+    "code": "KBJ-01",
+    "title": "Kebijakan Refund & Pengembalian",
+    "version": "2.1",
+    "status": "tidak_berlaku",
+    "effectiveDate": "2025-01-01",
+    "pageCount": 3,
+    "articles": [
+      {
+        "number": "1.1",
+        "title": "Tujuan dan Ruang Lingkup",
+        "page": 1
+      },
+      {
+        "number": "1.2",
+        "title": "Definisi",
+        "page": 1
+      },
+      {
+        "number": "1.3",
+        "title": "Kewenangan Keputusan",
+        "page": 1
+      },
+      {
+        "number": "2.1",
+        "title": "Alasan yang Dapat Diterima",
+        "page": 2
+      },
+      {
+        "number": "2.2",
+        "title": "Alasan yang Tidak Dapat Diterima",
+        "page": 2
+      },
+      {
+        "number": "3.1",
+        "title": "Batas Waktu Pengajuan",
+        "page": 2
+      },
+      {
+        "number": "3.2",
+        "title": "Syarat Kondisi Barang",
+        "page": 2
+      },
+      {
+        "number": "3.3",
+        "title": "Bukti yang Wajib Dilampirkan",
+        "page": 2
+      },
+      {
+        "number": "4.1",
+        "title": "Langkah Pengajuan",
+        "page": 3
+      },
+      {
+        "number": "4.2",
+        "title": "Pengiriman Retur",
+        "page": 3
+      },
+      {
+        "number": "5.1",
+        "title": "Metode Pengembalian",
+        "page": 3
+      },
+      {
+        "number": "5.2",
+        "title": "Nilai yang Dikembalikan",
+        "page": 3
+      },
+      {
+        "number": "6.1",
+        "title": "Penolakan dan Keberatan",
+        "page": 3
+      },
+      {
+        "number": "6.2",
+        "title": "Perubahan Kebijakan",
+        "page": 3
+      }
+    ]
+  },
+  {
+    "file": "kebijakan-refund-pengembalian-v3.0.pdf",
+    "code": "KBJ-01",
+    "title": "Kebijakan Refund & Pengembalian",
+    "version": "3.0",
+    "status": "aktif",
+    "effectiveDate": "2026-08-01",
+    "pageCount": 5,
+    "articles": [
+      {
+        "number": "1.1",
+        "title": "Tujuan dan Ruang Lingkup",
+        "page": 1
+      },
+      {
+        "number": "1.2",
+        "title": "Definisi",
+        "page": 1
+      },
+      {
+        "number": "1.3",
+        "title": "Kewenangan Keputusan",
+        "page": 1
+      },
+      {
+        "number": "2.1",
+        "title": "Alasan yang Dapat Diterima",
+        "page": 2
+      },
+      {
+        "number": "2.2",
+        "title": "Alasan yang Tidak Dapat Diterima",
+        "page": 2
+      },
+      {
+        "number": "2.3",
+        "title": "Keluhan Barang Rusak tanpa Permintaan Refund",
+        "page": 2
+      },
+      {
+        "number": "3.1",
+        "title": "Batas Waktu Pengajuan",
+        "page": 2
+      },
+      {
+        "number": "3.2",
+        "title": "Syarat Kondisi Barang",
+        "page": 3
+      },
+      {
+        "number": "3.3",
+        "title": "Bukti yang Wajib Dilampirkan",
+        "page": 3
+      },
+      {
+        "number": "3.4",
+        "title": "Pesanan yang Belum Diterima",
+        "page": 3
+      },
+      {
+        "number": "4.1",
+        "title": "Langkah Pengajuan",
+        "page": 4
+      },
+      {
+        "number": "4.2",
+        "title": "Verifikasi Kepemilikan Order",
+        "page": 4
+      },
+      {
+        "number": "4.3",
+        "title": "Pengiriman Retur",
+        "page": 4
+      },
+      {
+        "number": "5.1",
+        "title": "Metode Pengembalian",
+        "page": 4
+      },
+      {
+        "number": "5.2",
+        "title": "Nilai yang Dikembalikan",
+        "page": 5
+      },
+      {
+        "number": "6.1",
+        "title": "Penolakan dan Keberatan",
+        "page": 5
+      },
+      {
+        "number": "6.2",
+        "title": "Perubahan dari Versi Sebelumnya",
+        "page": 5
+      }
+    ]
+  },
+  {
+    "file": "panduan-tone-template-balasan-cs-v1.3.pdf",
+    "code": "KBJ-06",
+    "title": "Panduan Tone & Template Balasan CS",
+    "version": "1.3",
+    "status": "aktif",
+    "effectiveDate": "2026-09-01",
+    "pageCount": 4,
+    "articles": [
+      {
+        "number": "1.1",
+        "title": "Tujuan",
+        "page": 1
+      },
+      {
+        "number": "1.2",
+        "title": "Prinsip Nada",
+        "page": 1
+      },
+      {
+        "number": "1.3",
+        "title": "Bahasa",
+        "page": 1
+      },
+      {
+        "number": "2.1",
+        "title": "Struktur Baku",
+        "page": 2
+      },
+      {
+        "number": "2.2",
+        "title": "Satu Email Berisi Beberapa Masalah",
+        "page": 2
+      },
+      {
+        "number": "2.3",
+        "title": "Panjang dan Format",
+        "page": 2
+      },
+      {
+        "number": "3.1",
+        "title": "Larangan dalam Balasan",
+        "page": 2
+      },
+      {
+        "number": "3.2",
+        "title": "Pilihan Kata",
+        "page": 2
+      },
+      {
+        "number": "4.1",
+        "title": "Pelanggan Marah",
+        "page": 3
+      },
+      {
+        "number": "4.2",
+        "title": "Pelanggan Menyampaikan Ancaman",
+        "page": 3
+      },
+      {
+        "number": "4.3",
+        "title": "Permintaan di Luar Kebijakan",
+        "page": 3
+      },
+      {
+        "number": "5.1",
+        "title": "Template Barang Rusak",
+        "page": 3
+      },
+      {
+        "number": "5.2",
+        "title": "Template Salah Kirim",
+        "page": 3
+      },
+      {
+        "number": "5.3",
+        "title": "Template Pengiriman Bermasalah",
+        "page": 3
+      },
+      {
+        "number": "5.4",
+        "title": "Template Refund dalam Batas Waktu",
+        "page": 4
+      },
+      {
+        "number": "5.5",
+        "title": "Template Refund Melewati Batas Waktu",
+        "page": 4
+      },
+      {
+        "number": "5.6",
+        "title": "Template Masalah Pembayaran",
+        "page": 4
+      },
+      {
+        "number": "5.7",
+        "title": "Template Masalah Akun",
+        "page": 4
+      },
+      {
+        "number": "5.8",
+        "title": "Template Pertanyaan Produk",
+        "page": 4
+      }
+    ]
+  }
+]

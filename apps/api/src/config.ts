@@ -22,6 +22,9 @@ export const config = {
   databaseUrl: () =>
     process.env.DATABASE_URL ?? "postgres://email_routing:email_routing@localhost:5433/email_routing",
   inboxDir: () => path.resolve(repoRoot(), process.env.INBOX_DIR ?? "data/inbox"),
+  /** Sumber Markdown Kebijakan dan folder PDF hasil `pnpm policies:generate`. */
+  policySourceDir: () => path.resolve(repoRoot(), "data/policies/source"),
+  policyPdfDir: () => path.resolve(repoRoot(), "data/policies"),
   llmProvider: () => process.env.LLM_PROVIDER ?? "fake",
   port: () => Number(process.env.PORT ?? 3000),
 };

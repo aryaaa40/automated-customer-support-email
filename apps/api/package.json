@@ -8,6 +8,7 @@
     "start": "node dist/main.js",
     "process-inbox": "nest build && node dist/cli.js process-inbox",
     "seed": "nest build && node dist/cli.js seed",
+    "policies:generate": "nest build && node dist/cli.js policies:generate",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "nest build && node dist/cli.js migrate",
     "typecheck": "tsc --noEmit",
@@ -20,6 +21,7 @@
     "@nestjs/platform-express": "^11.2.12",
     "drizzle-orm": "~0.44.7",
     "mailparser": "^3.15.0",
+    "pdfkit": "0.20.2",
     "pg": "^8.23.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
@@ -33,10 +35,12 @@
     "@types/mailparser": "^3.9.0",
     "@types/node": "^22.20.7",
     "@types/nodemailer": "^8.0.2",
+    "@types/pdfkit": "0.17.7",
     "@types/pg": "^8.23.1",
     "drizzle-kit": "~0.31.11",
     "nodemailer": "^7.0.13",
     "typescript": "~5.9.3",
+    "unpdf": "2.1.0",
     "unplugin-swc": "^1.6.0",
     "vitest": "^3.2.7"
   }
