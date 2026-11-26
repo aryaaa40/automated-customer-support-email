@@ -69,13 +69,35 @@ describe("maskSensitiveData: alamat", () => {
   describe("label alamat di akhir baris", () => {
     it.each([
       ["Alamat:\nGriya Asri C2 no 7\nBandung", "Alamat:\n[ALAMAT_1]"],
-      [
-        "Alamat pengiriman:\n  griya asri c2 no 7\nbandung\n\nTerima kasih",
-        "Alamat pengiriman:\n  [ALAMAT_1]\n\nTerima kasih",
-      ],
+      ["Alamat pengiriman:\n  griya asri c2 no 7\n\nTerima kasih", "Alamat pengiriman:\n  [ALAMAT_1]\n\nTerima kasih"],
       ["Alamat:\r\nGriya Asri C2 no 7\r\nBandung\r\n\r\nMakasih", "Alamat:\r\n[ALAMAT_1]\r\n\r\nMakasih"],
-    ])("menyamarkan baris berikutnya sampai baris kosong: %j", (text, expected) => {
+    ])("menyamarkan baris pertama dan baris lanjutan alamat: %j", (text, expected) => {
       expect(mask(text)).toBe(expected);
+    });
+
+    it("menyatukan alamat beberapa baris sesudah label menjadi satu token", () => {
+      expect(mask("Alamat:\nJl. Melati No. 5\nRT 02/RW 03, Kel. Sukamaju\nKota Bandung 40123")).toBe(
+        "Alamat:\n[ALAMAT_1]",
+      );
+    });
+
+    it("berhenti sebelum kalimat keluhan supaya Ancaman tetap terlihat", () => {
+      const text =
+        "Alamat saya:\nPerum Griya Asri C2/7, Depok\nMohon dicek ya ORD-1023, saya kecewa banget dan mau lapor YLKI kalau tidak ada solusi.";
+
+      expect(mask(text)).toBe(
+        "Alamat saya:\n[ALAMAT_1]\nMohon dicek ya ORD-1023, saya kecewa banget dan mau lapor YLKI kalau tidak ada solusi.",
+      );
+    });
+
+    it("membiarkan baris permintaan sesudah alamat", () => {
+      expect(mask("Alamat:\nGriya Asri C2 no 7\nDepok\nTolong barangnya dikirim ulang ke alamat ini ya")).toBe(
+        "Alamat:\n[ALAMAT_1]\nTolong barangnya dikirim ulang ke alamat ini ya",
+      );
+    });
+
+    it("batasan: baris lanjutan yang seluruhnya huruf kecil tidak ikut disamarkan", () => {
+      expect(mask("Alamat:\ngriya asri c2 no 7\nbandung")).toBe("Alamat:\n[ALAMAT_1]\nbandung");
     });
 
     it("tetap membiarkan nomor order di tengah blok alamat", () => {

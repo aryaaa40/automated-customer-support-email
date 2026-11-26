@@ -66,7 +66,8 @@ const REGION_ANCHOR =
   /(?<![\p{L}\p{N}])(?:RT|RW|Kel|Kelurahan|Kec|Kecamatan|Kab|Kabupaten|Desa|Kota)(?![\p{L}\p{N}])\.?/gu;
 /**
  * Label "Alamat:" menandai alamat apa pun hurufnya: sisa kalimat di baris
- * yang sama, atau kalau label ada di akhir baris, baris-baris berikutnya.
+ * yang sama, atau kalau label ada di akhir baris, baris berikutnya (plus
+ * baris lanjutan yang terlihat seperti alamat).
  */
 const ADDRESS_LABEL =
   /(?<![\p{L}\p{N}])alamat(?:\s+(?:pengiriman|rumah|saya|lengkap|kirim|baru|tujuan))*\s*:[ \t]*/giu;
@@ -91,6 +92,8 @@ const ADDRESS_TOKEN = /[ \t]*(?:([\p{L}\p{N}]+(?:[/-][\p{L}\p{N}]+)*)|([.,:#()/-
 const ADDRESS_GAP = /^[\s,]*$/;
 /** Label "Alamat:" yang langsung diikuti baris baru. */
 const LINE_BREAK_AFTER_LABEL = /\r?\n/y;
+/** Kata dalam satu baris, sama seperti kata di ADDRESS_TOKEN. */
+const ADDRESS_LINE_WORD = /[\p{L}\p{N}]+(?:[/-][\p{L}\p{N}]+)*/gu;
 /** Potongan baris di antara bagian yang dilindungi (mis. nomor order di tengah blok alamat). */
 const UNSHIELDED_SEGMENT = /[^\u0000]+/g;
 
@@ -222,18 +225,21 @@ function isFollowedByLineBreak(text: string, position: number): boolean {
 }
 
 /**
- * Baris-baris sesudah label "Alamat:" di akhir baris, sampai baris kosong
- * atau akhir teks. Tidak butuh kata kunci jalan, karena labelnya sudah
- * menandai isinya sebagai alamat. Bagian yang dilindungi tidak ikut disamarkan.
+ * Baris sesudah label "Alamat:" di akhir baris. Baris pertama selalu
+ * disamarkan tanpa butuh kata kunci jalan, karena labelnya sudah menandai
+ * isinya sebagai alamat. Baris berikutnya ikut hanya kalau semua katanya
+ * terlihat seperti alamat, supaya kalimat keluhan di bawahnya (dan Ancaman di
+ * dalamnya) tetap sampai ke LLM. Bagian yang dilindungi tidak ikut disamarkan.
  */
 function findAddressBlock(text: string, labelEnd: number): Span[] {
   const spans: Span[] = [];
   let lineStart = text.indexOf("\n", labelEnd) + 1;
+  let isFirstLine = true;
   while (lineStart < text.length) {
     const newline = text.indexOf("\n", lineStart);
     const lineEnd = newline === -1 ? text.length : newline;
     const line = text.slice(lineStart, lineEnd);
-    if (line.trim() === "") break;
+    if (line.trim() === "" || (!isFirstLine && !isAddressLine(line))) break;
 
     for (const segment of line.matchAll(UNSHIELDED_SEGMENT)) {
       const content = segment[0].trim();
@@ -241,9 +247,16 @@ function findAddressBlock(text: string, labelEnd: number): Span[] {
       const start = lineStart + segment.index + segment[0].indexOf(content);
       spans.push({ start, end: start + content.length });
     }
+    isFirstLine = false;
     lineStart = lineEnd + 1;
   }
   return spans;
+}
+
+/** Baris lanjutan alamat: punya kata, dan semua katanya lolos `isAddressWord`. */
+function isAddressLine(line: string): boolean {
+  const words = line.match(ADDRESS_LINE_WORD) ?? [];
+  return words.length > 0 && words.every(isAddressWord);
 }
 
 function isAddressWord(word: string): boolean {
