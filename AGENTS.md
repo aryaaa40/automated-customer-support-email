@@ -20,6 +20,10 @@ Lima label bawaan: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-h
 
 Single-context: satu `GLOSSARY.md` + `docs/adr/` di root repo. See `docs/agents/domain.md`.
 
+### Standar kode
+
+Sebelum menulis atau me-review kode, baca `docs/agents/coding-standards.md`: bahasa dan penamaan, fungsi murni untuk aturan, validasi di batas sistem, error dan log.
+
 ### Frontend
 
 Sebelum mengubah `apps/web`, baca `docs/agents/frontend.md`: struktur per fitur, TanStack Query, Tailwind + shadcn/ui.

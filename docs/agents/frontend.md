@@ -30,6 +30,5 @@ Setiap folder fitur menyimpan halaman, komponennya sendiri, dan `api.ts` berisi 
 - **Komponen `shared/ui` presentasional**: hanya menerima props. Pengambilan data terjadi di hook fitur.
 - **Kontrak dari `@email-routing/shared`**: tipe request/response diimpor dari paket ini, satu sumber untuk API dan web.
 - **Styling dengan Tailwind + komponen shadcn** yang di-generate ke `shared/ui`.
-- **Teks UI berbahasa Indonesia** memakai istilah `GLOSSARY.md`.
 
 Kode di `src/` yang masih datar dipindah ke struktur ini lewat issue #22.
