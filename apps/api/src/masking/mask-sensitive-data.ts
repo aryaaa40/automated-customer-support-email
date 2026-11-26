@@ -80,6 +80,18 @@ const ADDRESS_WORDS = new Set([
   "unit", "kav", "kavling", "perum", "perumahan", "komp", "komplek", "kompleks",
   "utara", "selatan", "timur", "barat", "tengah",
 ]);
+/**
+ * Kata kapital semua sepanjang ini (`SAYA`, `POLISI`, `ABAIKAN`) lebih mirip
+ * teriakan atau instruksi daripada nama jalan, jadi tidak dianggap bagian
+ * alamat. Singkatan pendek seperti `III` atau `BCA` tetap boleh.
+ */
+const MIN_SHOUTED_WORD_LETTERS = 4;
+const SHOUTED_WORD = new RegExp(`^\\p{Lu}{${MIN_SHOUTED_WORD_LETTERS},}$`, "u");
+/**
+ * Baris lanjutan tanpa angka dan tanpa kata alamat masih dianggap alamat
+ * kalau sependek ini (`Bandung`, `Jawa Barat`); kalimat lebih panjang berhenti.
+ */
+const MAX_PLAIN_ADDRESS_LINE_WORDS = 3;
 /** Singkatan yang boleh diikuti titik tanpa mengakhiri alamat (`No. 5`, `Kel. Sukamaju`). */
 const ABBREVIATIONS = new Set([
   "jl", "jln", "no", "gg", "kel", "kec", "kab", "prov", "komp", "perum", "blk", "ds",
@@ -253,14 +265,25 @@ function findAddressBlock(text: string, labelEnd: number): Span[] {
   return spans;
 }
 
-/** Baris lanjutan alamat: punya kata, dan semua katanya lolos `isAddressWord`. */
+/**
+ * Baris lanjutan alamat: semua katanya lolos `isAddressWord`, dan barisnya
+ * punya tanda alamat (angka, kata alamat, atau cukup pendek). Kalimat Title
+ * Case seperti "Saya Akan Lapor Ke Polisi" tidak punya tanda itu.
+ */
 function isAddressLine(line: string): boolean {
   const words = line.match(ADDRESS_LINE_WORD) ?? [];
-  return words.length > 0 && words.every(isAddressWord);
+  if (words.length === 0 || !words.every(isAddressWord)) return false;
+  return (
+    /\d/.test(line) ||
+    words.some((word) => ADDRESS_WORDS.has(word.toLowerCase())) ||
+    words.length <= MAX_PLAIN_ADDRESS_LINE_WORDS
+  );
 }
 
 function isAddressWord(word: string): boolean {
-  return /^\p{Lu}/u.test(word) || /\d/.test(word) || ADDRESS_WORDS.has(word.toLowerCase());
+  if (ADDRESS_WORDS.has(word.toLowerCase())) return true;
+  if (SHOUTED_WORD.test(word)) return false;
+  return /^\p{Lu}/u.test(word) || /\d/.test(word);
 }
 
 /** Potongan alamat yang tumpang tindih atau hanya dipisah baris baru/koma menjadi satu alamat. */
