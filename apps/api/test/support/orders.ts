@@ -1,8 +1,11 @@
-import type { SeedData } from "../../src/orders/seed";
+import type { SeedData, SeedOrder } from "../../src/orders/seed";
 
 /**
  * Database order fixture untuk Seam 1, ditulis tangan.
  * Email Budi sengaja ditulis dengan huruf besar-kecil campuran.
+ * ORD-1034 dan ORD-1035 (Budi) dan ORD-1002 (Sari) dipilih untuk Koreksi
+ * Nomor Order: ORD-1043 hanya mirip ORD-1034, ORD-1036 mirip keduanya, dan
+ * ORD-1012 hanya mirip ORD-1002 milik Sari.
  */
 export const ORDER_FIXTURE: SeedData = {
   customers: [
@@ -50,5 +53,21 @@ export const ORDER_FIXTURE: SeedData = {
         },
       ],
     },
+    budiOrder("ORD-1034", new Date("2026-11-20T02:00:00Z")),
+    budiOrder("ORD-1035", new Date("2026-11-21T02:00:00Z")),
   ],
 };
+
+/** Order Budi yang belum dikirim, cukup untuk dicari lewat Koreksi Nomor Order. */
+function budiOrder(orderNumber: string, orderedAt: Date): SeedOrder {
+  return {
+    orderNumber,
+    orderOwnerEmail: "Budi.Santoso@Pelanggan.TEST",
+    orderedAt,
+    paymentStatus: "menunggu",
+    shippingStatus: "belum_dikirim",
+    deliveredAt: null,
+    items: [{ sku: "DEK-VAS-01", quantity: 1, unitPriceRupiah: 125_000 }],
+    transactions: [],
+  };
+}

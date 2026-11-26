@@ -8,6 +8,7 @@ import {
   type EmailSource,
 } from "../email-source/email-source";
 import { Extractor } from "../extraction/extractor";
+import { normalizeOrderNumber } from "../orders/correct-order-number";
 import { OrdersService } from "../orders/orders.service";
 import { type OrderVerification, verifyOrder } from "../orders/verify-order";
 import { TicketsService } from "../tickets/tickets.service";
@@ -68,9 +69,15 @@ export class IngestionService {
 
   /** Verifikasi per Issue: tiap Issue dicek terhadap order-nya sendiri (ADR-0002). */
   private async verifyOrders(sender: string, extraction: Extraction): Promise<OrderVerification[]> {
-    const orderNumbers = extraction.issues.flatMap((issue) => (issue.orderNumber ? [issue.orderNumber.value] : []));
-    const ordersByNumber = await this.orders.findByNumbers(orderNumbers);
-    return extraction.issues.map((issue) => verifyOrder(sender, issue.orderNumber?.value ?? null, ordersByNumber));
+    const orderNumbers = extraction.issues.flatMap((issue) =>
+      issue.orderNumber ? [normalizeOrderNumber(issue.orderNumber.value)] : [],
+    );
+    const [ordersByNumber, senderOrderNumbers] = await Promise.all([
+      this.orders.findByNumbers(orderNumbers),
+      this.orders.listOrderNumbersByOwner(sender),
+    ]);
+    const lookup = { ordersByNumber, senderOrderNumbers };
+    return extraction.issues.map((issue) => verifyOrder(sender, issue.orderNumber?.value ?? null, lookup));
   }
 }
 

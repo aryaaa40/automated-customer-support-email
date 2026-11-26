@@ -28,6 +28,6 @@ pnpm dev:web              # http://localhost:5173
 | `apps/api` | NestJS: HTTP API dan CLI (`process-inbox`) lewat standalone application context |
 | `apps/web` | React + Vite: daftar dan detail Tiket |
 
-Alur saat ini: `data/inbox/*.eml` → FileSource → Extractor (adapter LLM palsu, divalidasi skema) → Order Verifier per Issue (order ada atau tidak, Pengirim = Pemilik Order atau tidak) → Email Masuk + Tiket + Issue di Postgres → `GET /tickets` → halaman web.
+Alur saat ini: `data/inbox/*.eml` → FileSource → Extractor (adapter LLM palsu, divalidasi skema) → Order Verifier per Issue (nomor order dinormalisasi, lalu dicari persis; kalau tidak ada, Koreksi Nomor Order ke satu-satunya order milik Pengirim berjarak edit ≤ 1, atau nomor order ambigu kalau kandidatnya lebih dari satu; lalu Pengirim = Pemilik Order atau tidak) → Email Masuk + Tiket + Issue di Postgres → `GET /tickets` → halaman web.
 
 Database order dummy dibuat `pnpm seed` dari PRNG ber-seed tetap: 30 pelanggan, 24 produk (5 kategori produk), dan 150 order `ORD-1001` s.d. `ORD-1150` beserta item, transaksi pembayaran, status pengiriman, dan tanggal diterima. Menjalankannya ulang menghasilkan data yang sama dan tidak menyentuh Tiket.

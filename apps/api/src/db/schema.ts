@@ -166,4 +166,8 @@ export const issues = pgTable("issues", {
   verifiedOrderNumber: text("verified_order_number"),
   /** Pengirim sama dengan Pemilik Order; null kalau order tidak ditemukan. */
   isSenderOrderOwner: boolean("is_sender_order_owner"),
+  /** Order ditemukan lewat Koreksi Nomor Order; null kalau order tidak ditemukan. */
+  isOrderNumberCorrected: boolean("is_order_number_corrected"),
+  /** Order milik Pengirim yang sama-sama mirip; hanya terisi kalau nomor order ambigu. */
+  candidateOrderNumbers: text("candidate_order_numbers").array(),
 });

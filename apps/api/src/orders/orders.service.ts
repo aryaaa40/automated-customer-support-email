@@ -1,6 +1,6 @@
 import type { OrderDto } from "@email-routing/shared";
 import { Inject, Injectable } from "@nestjs/common";
-import { asc, eq, inArray } from "drizzle-orm";
+import { asc, eq, inArray, sql } from "drizzle-orm";
 import { DATABASE, type Database } from "../db/database";
 import { customers, orderItems, orders, paymentTransactions, products } from "../db/schema";
 
@@ -13,6 +13,20 @@ export interface OrderRecord extends OrderDto {
 @Injectable()
 export class OrdersService {
   constructor(@Inject(DATABASE) private readonly db: Database) {}
+
+  /**
+   * Semua nomor order milik `orderOwnerEmail`, dibandingkan case-insensitive
+   * seperti verifikasi Pemilik Order. Sumber kandidat Koreksi Nomor Order.
+   */
+  async listOrderNumbersByOwner(orderOwnerEmail: string): Promise<string[]> {
+    const rows = await this.db
+      .select({ orderNumber: orders.orderNumber })
+      .from(orders)
+      .innerJoin(customers, eq(orders.customerId, customers.id))
+      .where(eq(sql`lower(${customers.email})`, orderOwnerEmail.trim().toLowerCase()))
+      .orderBy(asc(orders.orderNumber));
+    return rows.map((row) => row.orderNumber);
+  }
 
   /** Order lengkap untuk nomor-nomor order yang persis sama; yang tidak ada tidak muncul di Map. */
   async findByNumbers(orderNumbers: string[]): Promise<Map<string, OrderRecord>> {

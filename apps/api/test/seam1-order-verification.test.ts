@@ -40,6 +40,7 @@ describe("Seam 1: verifikasi order per Issue", () => {
       status: "ditemukan",
       isSenderOrderOwner: true,
       orderOwnerEmail: "Budi.Santoso@Pelanggan.TEST",
+      orderNumberCorrection: null,
       order: {
         orderNumber: "ORD-1001",
         orderedAt: "2026-11-10T03:00:00.000Z",
@@ -100,5 +101,66 @@ describe("Seam 1: verifikasi order per Issue", () => {
       { status: "ditemukan", isSenderOrderOwner: true, order: { orderNumber: "ORD-1001", shippingStatus: "diterima" } },
       { status: "ditemukan", isSenderOrderOwner: false, order: { orderNumber: "ORD-1002", shippingStatus: "dikirim" } },
     ]);
+  });
+
+  describe("normalisasi dan Koreksi Nomor Order", () => {
+    it("nomor order yang salah tulis dinormalisasi tanpa dicatat sebagai koreksi", async () => {
+      const ticket = await processEmail("budi.santoso@pelanggan.test", [
+        issue({ orderNumber: orderNumber("ord 1O01") }),
+      ]);
+
+      expect(ticket.issues[0]!.verification).toMatchObject({
+        status: "ditemukan",
+        isSenderOrderOwner: true,
+        orderNumberCorrection: null,
+        order: { orderNumber: "ORD-1001" },
+      });
+    });
+
+    it("digit tertukar: ORD-1043 dikoreksi ke ORD-1034 milik Pengirim, koreksinya tampil di Tiket", async () => {
+      const ticket = await processEmail("budi.santoso@pelanggan.test", [
+        issue({ category: "pengiriman_bermasalah", orderNumber: orderNumber("ORD-1043") }),
+      ]);
+
+      expect(ticket.issues[0]!.verification).toMatchObject({
+        status: "ditemukan",
+        isSenderOrderOwner: true,
+        orderNumberCorrection: { originalOrderNumber: "ORD-1043", correctedOrderNumber: "ORD-1034" },
+        order: { orderNumber: "ORD-1034", paymentStatus: "menunggu", shippingStatus: "belum_dikirim" },
+      });
+    });
+
+    it("dua order milik Pengirim sama-sama berjarak 1: nomor order ambigu, tidak dikoreksi", async () => {
+      const ticket = await processEmail("budi.santoso@pelanggan.test", [
+        issue({ category: "pengiriman_bermasalah", orderNumber: orderNumber("ORD-1036") }),
+      ]);
+
+      expect(ticket.issues[0]!.verification).toEqual({
+        status: "nomor_ambigu",
+        orderNumber: "ORD-1036",
+        candidateOrderNumbers: ["ORD-1034", "ORD-1035"],
+      });
+    });
+
+    it("order milik pelanggan lain tidak pernah menjadi hasil koreksi", async () => {
+      // ORD-1012 berjarak 1 dari ORD-1002 milik Sari, dan berjarak 2 dari semua order Budi.
+      const ticket = await processEmail("budi.santoso@pelanggan.test", [
+        issue({ category: "refund", orderNumber: orderNumber("ORD-1012") }),
+      ]);
+
+      expect(ticket.issues[0]!.verification).toEqual({ status: "tidak_ditemukan", orderNumber: "ORD-1012" });
+    });
+
+    it("kontrol: kalau Sari yang menulis ORD-1012, nomornya dikoreksi ke order Sari sendiri", async () => {
+      const ticket = await processEmail("Sari <SARI@pelanggan.test>", [
+        issue({ category: "refund", orderNumber: orderNumber("ORD-1012") }),
+      ]);
+
+      expect(ticket.issues[0]!.verification).toMatchObject({
+        status: "ditemukan",
+        isSenderOrderOwner: true,
+        orderNumberCorrection: { originalOrderNumber: "ORD-1012", correctedOrderNumber: "ORD-1002" },
+      });
+    });
   });
 });

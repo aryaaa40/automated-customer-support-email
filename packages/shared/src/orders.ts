@@ -28,7 +28,10 @@ export type TransactionStatus = (typeof TRANSACTION_STATUSES)[number];
  * Status verifikasi order untuk satu Issue.
  * - `tanpa_nomor`: Issue tidak menyebut nomor order.
  * - `ditemukan`: nomor order ada di database.
- * - `tidak_ditemukan`: nomor order disebut tapi tidak ada di database.
+ * - `tidak_ditemukan`: nomor order disebut tapi tidak ada di database, dan
+ *   tidak ada order milik Pengirim yang mirip.
+ * - `nomor_ambigu`: tidak ada yang cocok persis, dan lebih dari satu order
+ *   milik Pengirim sama-sama mirip, jadi tidak dikoreksi.
  */
-export const ORDER_VERIFICATION_STATUSES = ["tanpa_nomor", "ditemukan", "tidak_ditemukan"] as const;
+export const ORDER_VERIFICATION_STATUSES = ["tanpa_nomor", "ditemukan", "tidak_ditemukan", "nomor_ambigu"] as const;
 export type OrderVerificationStatus = (typeof ORDER_VERIFICATION_STATUSES)[number];

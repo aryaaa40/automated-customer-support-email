@@ -15,7 +15,10 @@ const TRANSACTION_STATUS_CLASS: Record<TransactionStatus, string> = {
   menunggu: "muted",
 };
 
-/** Hasil verifikasi order satu Issue: order ada atau tidak, kecocokan Pemilik Order, status order. */
+/**
+ * Hasil verifikasi order satu Issue: order ada atau tidak, Koreksi Nomor Order
+ * atau nomor order ambigu, kecocokan Pemilik Order, dan status order.
+ */
 export function OrderVerification({ verification }: { verification: OrderVerificationDto }) {
   if (verification.status === "tanpa_nomor") {
     return <p className="verification muted">Verifikasi order: tidak ada nomor order.</p>;
@@ -27,6 +30,20 @@ export function OrderVerification({ verification }: { verification: OrderVerific
       </p>
     );
   }
+  if (verification.status === "nomor_ambigu") {
+    return (
+      <p className="verification flag">
+        Nomor order ambigu: <code>{verification.orderNumber}</code> mirip dengan beberapa order milik Pengirim (
+        {verification.candidateOrderNumbers.map((candidate, i) => (
+          <span key={candidate}>
+            {i > 0 && ", "}
+            <code>{candidate}</code>
+          </span>
+        ))}
+        ), jadi tidak dikoreksi.
+      </p>
+    );
+  }
 
   const { order } = verification;
   return (
@@ -34,6 +51,13 @@ export function OrderVerification({ verification }: { verification: OrderVerific
       <h4>
         Order <code>{order.orderNumber}</code>
       </h4>
+      {verification.orderNumberCorrection && (
+        <p className="correction">
+          Koreksi Nomor Order: <code>{verification.orderNumberCorrection.originalOrderNumber}</code> →{" "}
+          <code>{verification.orderNumberCorrection.correctedOrderNumber}</code>{" "}
+          <span className="muted">(satu-satunya order Pengirim yang mirip)</span>
+        </p>
+      )}
       <dl>
         <dt>Pemilik Order</dt>
         <dd>

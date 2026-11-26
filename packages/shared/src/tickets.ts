@@ -37,13 +37,27 @@ export type OrderVerificationDto =
   | { status: "tanpa_nomor" }
   | { status: "tidak_ditemukan"; orderNumber: string }
   | {
+      status: "nomor_ambigu";
+      orderNumber: string;
+      /** Order milik Pengirim yang sama-sama mirip dengan `orderNumber`. */
+      candidateOrderNumbers: string[];
+    }
+  | {
       status: "ditemukan";
       /** Pengirim sama dengan Pemilik Order (dibandingkan case-insensitive). */
       isSenderOrderOwner: boolean;
       /** Email Pemilik Order; tersamar (mis. `s***@pelanggan.example`) kalau bukan Pengirim. */
       orderOwnerEmail: string;
+      /** Koreksi Nomor Order yang dipakai; null kalau nomor order cocok persis setelah normalisasi. */
+      orderNumberCorrection: OrderNumberCorrectionDto | null;
       order: OrderDto;
     };
+
+/** Koreksi Nomor Order: nomor yang disebut di email → order milik Pengirim yang dipakai. */
+export interface OrderNumberCorrectionDto {
+  originalOrderNumber: string;
+  correctedOrderNumber: string;
+}
 
 /** Satu order di database order, dengan uang dalam integer rupiah. */
 export interface OrderDto {

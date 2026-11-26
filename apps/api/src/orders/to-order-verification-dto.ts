@@ -7,6 +7,8 @@ export interface StoredOrderVerification {
   orderNumber: string | null;
   verifiedOrderNumber: string | null;
   isSenderOrderOwner: boolean | null;
+  isOrderNumberCorrected: boolean | null;
+  candidateOrderNumbers: string[] | null;
 }
 
 /**
@@ -21,6 +23,13 @@ export function toOrderVerificationDto(
   if (stored.orderVerification === "tanpa_nomor" || stored.orderNumber === null) {
     return { status: "tanpa_nomor" };
   }
+  if (stored.orderVerification === "nomor_ambigu") {
+    return {
+      status: "nomor_ambigu",
+      orderNumber: stored.orderNumber,
+      candidateOrderNumbers: stored.candidateOrderNumbers ?? [],
+    };
+  }
   const record = stored.verifiedOrderNumber ? ordersByNumber.get(stored.verifiedOrderNumber) : undefined;
   // Order bisa hilang kalau database order di-seed ulang dengan data lain.
   if (stored.orderVerification === "tidak_ditemukan" || !record) {
@@ -32,6 +41,9 @@ export function toOrderVerificationDto(
     status: "ditemukan",
     isSenderOrderOwner,
     orderOwnerEmail: isSenderOrderOwner ? orderOwnerEmail : maskEmail(orderOwnerEmail),
+    orderNumberCorrection: stored.isOrderNumberCorrected
+      ? { originalOrderNumber: stored.orderNumber, correctedOrderNumber: order.orderNumber }
+      : null,
     order,
   };
 }

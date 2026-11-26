@@ -202,6 +202,8 @@ function toVerificationColumns(verification: OrderVerification) {
     orderVerification: verification.status,
     verifiedOrderNumber: isFound ? verification.orderNumber : null,
     isSenderOrderOwner: isFound ? verification.isSenderOrderOwner : null,
+    isOrderNumberCorrected: isFound ? verification.isOrderNumberCorrected : null,
+    candidateOrderNumbers: verification.status === "nomor_ambigu" ? verification.candidateOrderNumbers : null,
   };
 }
 
