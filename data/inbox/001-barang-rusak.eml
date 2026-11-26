@@ -1,0 +1,26 @@
+From: Budi Santoso <budi@pelanggan.example>
+To: cs@example.com
+Subject: Vas yang saya terima pecah
+Message-ID: <contoh-001@pelanggan.example>
+Date: Fri, 20 Nov 2026 01:15:00 +0000
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="--_NmP-03117598221ecc9e-Part_1"
+
+----_NmP-03117598221ecc9e-Part_1
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+Halo CS,
+
+Vas keramik pesanan saya sampai dalam keadaan pecah. Nomor order =
+ada di invoice terlampir.
+Mohon dibantu.
+
+Budi
+----_NmP-03117598221ecc9e-Part_1
+Content-Type: text/plain; name=invoice.txt
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename=invoice.txt
+
+SU5WT0lDRSBPUkQtMTAyMwpWYXMgS2VyYW1payB4MQpUb3RhbCBScDI1MC4wMDAK
+----_NmP-03117598221ecc9e-Part_1--

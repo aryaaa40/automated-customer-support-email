@@ -1,0 +1,15 @@
+{
+  "name": "email-routing",
+  "private": true,
+  "packageManager": "pnpm@10.34.9",
+  "scripts": {
+    "postinstall": "pnpm --filter @email-routing/shared build",
+    "build": "pnpm -r build",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
+    "db:up": "docker compose up -d",
+    "process-inbox": "pnpm --filter @email-routing/api process-inbox",
+    "dev:api": "pnpm --filter @email-routing/api dev",
+    "dev:web": "pnpm --filter @email-routing/web dev"
+  }
+}
