@@ -19,3 +19,7 @@ Lima label bawaan: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-h
 ### Domain docs
 
 Single-context: satu `GLOSSARY.md` + `docs/adr/` di root repo. See `docs/agents/domain.md`.
+
+### Frontend
+
+Sebelum mengubah `apps/web`, baca `docs/agents/frontend.md`: struktur per fitur, TanStack Query, Tailwind + shadcn/ui.
